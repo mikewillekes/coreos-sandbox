@@ -23,10 +23,6 @@ if File.exist?(CONFIG)
 end
 
 # Use old vb_xxx config variables when set
-def vm_gui
-  $vb_gui.nil? ? $vm_gui : $vb_gui
-end
-
 def vm_memory
   $vb_memory.nil? ? $vm_memory : $vb_memory
 end
@@ -72,12 +68,23 @@ Vagrant.configure("2") do |config|
     config.vm.network "forwarded_port", guest: 8443, host: 8443
 
     config.vm.provider :virtualbox do |vb|
-      vb.gui = vm_gui
-      vb.memory = vm_memory
-      vb.cpus = vm_cpus
+      vb.memory = 2048
+      vb.cpus = 1
+
+      #vb.gui = true
+      # From: http://portalstack.blogspot.ca/2013/11/vagrant-virtualbox-ubuntu-for-linux.html
+      #vb.customize ["modifyvm", :id, "--graphicscontroller", "vboxvga"]
+      #vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
+      #vb.customize ["modifyvm", :id, "--ioapic", "on"]
+      #vb.customize ["modifyvm", :id, "--vram", "256"]
+      #vb.customize ["modifyvm", :id, "--hwvirtex", "on"]
     end
 
     config.vm.network :private_network, ip: "172.18.8.100"
+
+    config.ssh.forward_agent = true
+    config.ssh.forward_x11 = true
+
   end
 
   #
@@ -106,12 +113,7 @@ Vagrant.configure("2") do |config|
 
       config.vm.hostname = vm_name
 
-      if $expose_docker_tcp
-        config.vm.network "forwarded_port", guest: 2375, host: ($expose_docker_tcp + i - 1), auto_correct: true
-      end
-
       config.vm.provider :virtualbox do |vb|
-        vb.gui = vm_gui
         vb.memory = vm_memory
         vb.cpus = vm_cpus
       end

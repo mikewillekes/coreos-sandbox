@@ -34,14 +34,6 @@ $instance_name_prefix="core"
 # Official CoreOS channel from which updates should be downloaded
 $update_channel='beta'
 
-# Enable port forwarding of Docker TCP socket
-# Set to the TCP port you want exposed on the *host* machine, default is 2375
-# If 2375 is used, Vagrant will auto-increment (e.g. in the case of $num_instances > 1)
-# You can then use the docker tool locally by setting the following env var:
-#   export DOCKER_HOST='tcp://127.0.0.1:2375'
-#$expose_docker_tcp=2375
-
-# Customize VMs
-#$vm_gui = false
+# Customize CoreOS VMs
 #$vm_memory = 1024
 #$vm_cpus = 1
