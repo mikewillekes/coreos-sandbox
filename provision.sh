@@ -2,7 +2,7 @@
 
 # Get prerequisites
 sudo apt-get -y update
-sudo apt-get install -y curl wget git build-essential openjdk-7-jdk maven tomcat7 python-pip python-dev tofrodos
+sudo apt-get install -y curl wget git build-essential openjdk-7-jdk maven python-pip python-dev tofrodos
 
 # Upgrade Python package manager
 sudo pip install --upgrade pip 
