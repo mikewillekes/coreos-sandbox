@@ -74,6 +74,12 @@ Vagrant.configure("2") do |config|
         privileged: false,
         inline: 'rm -f /home/core/.bashrc && touch /home/core/.bashrc && echo "export TERM=ansi" >> /home/core/.bashrc'
 
+      # If the cluster is setup correctly, we should be able to 
+      # pull the 'sandbox' Docker container from the development VM
+      config.vm.provision :shell, 
+        privileged: false,
+        inline: 'docker pull 172.18.8.100:5000/sandbox/tomcat:7'
+
       config.vm.provider :virtualbox do |v|
         # On VirtualBox, we don't have guest additions or a functional vboxsf
         # in CoreOS, so tell Vagrant that so it can be smarter.

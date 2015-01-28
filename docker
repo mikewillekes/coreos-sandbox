@@ -11,4 +11,6 @@
 
 # This is also a handy place to tweak where Docker's temporary files go.
 #export TMPDIR="/mnt/bigdrive/docker-tmp"
+
+# Make sure IP range for insecure-registry is also set in CoreOS #cloud-config
 DOCKER_OPTS="-r=true ${DOCKER_OPTS} --insecure-registry 172.18.8.0/24"
