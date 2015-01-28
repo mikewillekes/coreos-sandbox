@@ -39,51 +39,24 @@ Vagrant.configure("2") do |config|
   config.vm.define "dev", primary: true do |config|
 
     config.vm.box = "ubuntu/trusty64"
+    config.vm.network :private_network, ip: "172.18.8.100"
 
+    # Shell script provisioning
     config.vm.provision "shell", 
       privileged: false, 
       path: "provision.sh"
 
-    config.vm.provision "docker" do |d|
-      d.pull_images "tomcat:7"
-
-      # Startup a private docker registry on the dev box
-      # to test deployment to the cluster
-      d.pull_images "registry"
-      d.run "registry",
-        args: "-p 5000:5000 -v /tmp/registry:/tmp/registry"
-
-      d.pull_images "nginx"
-      d.run "nginx",
-        args: "-p 8080:80 -p 8443:443 -v /vagrant/nginx.conf:/etc/nginx/nginx.conf:ro -v /vagrant/www:/usr/share/nginx/html:ro"
-
-    end
-
-    # Folder and network config to host development Docker registry
-    config.vm.network "forwarded_port", guest: 5000, host: 5000
+    # Config for development Docker registry
     config.vm.synced_folder "./registry", "/tmp/registry"
 
-    # Network config for Nginx
+    # Config for Nginx
     config.vm.network "forwarded_port", guest: 8080, host: 8080
     config.vm.network "forwarded_port", guest: 8443, host: 8443
 
     config.vm.provider :virtualbox do |vb|
       vb.memory = 2048
       vb.cpus = 1
-
-      #vb.gui = true
-      # From: http://portalstack.blogspot.ca/2013/11/vagrant-virtualbox-ubuntu-for-linux.html
-      #vb.customize ["modifyvm", :id, "--graphicscontroller", "vboxvga"]
-      #vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
-      #vb.customize ["modifyvm", :id, "--ioapic", "on"]
-      #vb.customize ["modifyvm", :id, "--vram", "256"]
-      #vb.customize ["modifyvm", :id, "--hwvirtex", "on"]
     end
-
-    config.vm.network :private_network, ip: "172.18.8.100"
-
-    config.ssh.forward_agent = true
-    config.ssh.forward_x11 = true
 
   end
 
@@ -97,7 +70,9 @@ Vagrant.configure("2") do |config|
       config.vm.box_version = ">= 308.0.1"
       config.vm.box_url = "http://%s.release.core-os.net/amd64-usr/current/coreos_production_vagrant.json" % $update_channel
 
-      config.vm.provision :shell, inline: 'echo "172.18.8.100 dev-server" >> /etc/hosts'
+      config.vm.provision :shell, 
+        privileged: false,
+        inline: 'rm -f /home/core/.bashrc && touch /home/core/.bashrc && echo "export TERM=ansi" >> /home/core/.bashrc'
 
       config.vm.provider :virtualbox do |v|
         # On VirtualBox, we don't have guest additions or a functional vboxsf
