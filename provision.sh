@@ -31,6 +31,10 @@ chmod 600 /home/vagrant/.ssh/id_rsa.pub
 # Helper script to install on Ubuntu
 curl -sSL https://get.docker.com/ubuntu/ | sudo sh
 
+# Pull a few containers 
+sudo docker pull registry
+sudo docker pull tomcat:7
+
 # Custom config to support insecure repository (other than localhost)
 sudo service docker stop
 sudo cp -f /vagrant/docker /etc/default/docker && sudo fromdos /etc/default/docker
@@ -47,6 +51,6 @@ sleep 5
 #NGINX: args: "-p 8080:80 -p 8443:443 -v /vagrant/nginx.conf:/etc/nginx/nginx.conf:ro -v /vagrant/www:/usr/share/nginx/html:ro"
 
 # Build sandbox (Tomcat 7) container to verify everything's working
-docker build -t 172.18.8.100:5000/sandbox/tomcat:7 /vagrant/samples/tomcat
-docker push 172.18.8.100:5000/sandbox/tomcat:7
-docker pull 172.18.8.100:5000/sandbox/tomcat:7
+sudo docker build -t 172.18.8.100:5000/sandbox/tomcat:7 /vagrant/samples/tomcat
+sudo docker push 172.18.8.100:5000/sandbox/tomcat:7
+sudo docker pull 172.18.8.100:5000/sandbox/tomcat:7
